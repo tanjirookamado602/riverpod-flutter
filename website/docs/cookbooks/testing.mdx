@@ -28,7 +28,7 @@ But the reality is: While providers are declared as globals, the state of a prov
 is **not** global.
 
 Instead, it is stored in an object named [ProviderContainer], that you may have
-seen if you've read the dart-only examples.  
+seen if you looked at the dart-only examples.  
 If you haven't, know that this [ProviderContainer] object is implicitly created
 by [ProviderScope], the widget that enables [Riverpod] on our project.
 
@@ -124,6 +124,7 @@ void main() {
     container.listen<StateController<int>>(
       counterProvider,
       (StateController<int> controller) => listener(controller.state),
+      fireImmediately: true,
     );
 
     // the listener is called immediatly with 0, the default value
@@ -148,6 +149,7 @@ void main() {
     container.listen<StateController<int>>(
       counterProvider,
       (StateController<int> controller) => listener(controller.state),
+      fireImmediately: true,
     );
 
     // The new test correcly uses the default value: 0
@@ -255,10 +257,10 @@ test('override repositoryProvider', () async {
   );
 
   /// Wait for the request to finish
-  await Future<void>.value();
+  await container.read(todoListProvider.future);
 
   // Exposes the data fetched
-  expect(container.read(todoListProvider).data.value, [
+  expect(container.read(todoListProvider).value, [
     isA<Todo>()
         .having((s) => s.id, 'id', '42')
         .having((s) => s.label, 'label', 'Hello world')
@@ -277,7 +279,7 @@ allows replacing the implementation of a provider with a different behavior.
 Some providers expose simplified ways to override their behavior.  
 For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
-````dart
+```dart
 final todoListProvider = FutureProvider((ref) async => <Todo>[]);
 // ...
 ProviderScope(
@@ -289,9 +291,9 @@ ProviderScope(
   ],
   child: MyApp(),
 );
+```
+
 :::
-
-
 
 ## Full widget test example
 
@@ -396,7 +398,7 @@ void main() {
     ]);
   });
 }
-````
+```
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
