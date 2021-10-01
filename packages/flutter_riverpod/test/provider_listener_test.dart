@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use_from_same_package
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -7,9 +7,33 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
-  testWidgets('can downcast the value', (tester) async {}, skip: true);
-
   group('ProviderListener', () {
+    testWidgets('can downcast the value', (tester) async {
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep).state);
+
+      final container = createContainer();
+      final listener = Listener<num>();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: ProviderListener<num>(
+            provider: provider,
+            onChange: (c, value) => listener(value),
+            child: Container(),
+          ),
+        ),
+      );
+
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await tester.pump();
+
+      verifyOnly(listener, listener(1));
+    });
+
     testWidgets('works with providers that returns null', (tester) async {
       final nullProvider = Provider((ref) => null);
 
