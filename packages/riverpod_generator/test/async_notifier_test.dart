@@ -7,7 +7,8 @@ import 'integration/async.dart';
 import 'utils.dart';
 
 void main() {
-  test('Creates a Provider<T> if @riverpod is used on a synchronous function',
+  test(
+      'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
       () {
     final container = createContainer();
 
