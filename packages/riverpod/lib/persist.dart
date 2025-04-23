@@ -1,2 +1,2 @@
-export 'src/core/persist.dart'
-    show StorageOptions, PersistedData, Storage, StorageCacheTime;
+export 'src/internals.dart'
+    show StorageOptions, PersistedData, Storage, StorageCacheTime, Persistable;
